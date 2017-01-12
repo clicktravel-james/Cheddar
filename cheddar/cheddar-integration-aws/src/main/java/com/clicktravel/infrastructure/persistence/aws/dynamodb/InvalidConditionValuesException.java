@@ -14,21 +14,16 @@
  * limitations under the License.
  *
  */
-package com.clicktravel.cheddar.application.security;
+package com.clicktravel.infrastructure.persistence.aws.dynamodb;
 
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import com.clicktravel.cheddar.infrastructure.persistence.exception.PersistenceException;
 
-@Component
-@Aspect
-@Order(100)
-public class AuthenticatedAspect {
+public class InvalidConditionValuesException extends PersistenceException {
 
-    @Before("@annotation(com.clicktravel.cheddar.application.security.Authenticated)")
-    public void checkAuthenticated() {
-        SecurityChecker.checkAnyUser();
+    private static final long serialVersionUID = 1L;
+
+    public InvalidConditionValuesException(final String message) {
+        super(message);
     }
 
 }

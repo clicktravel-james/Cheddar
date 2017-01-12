@@ -18,7 +18,6 @@ package com.clicktravel.infrastructure.persistence.aws.dynamodb;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -249,17 +248,18 @@ public class DynamoDocumentStoreTemplate extends AbstractDynamoDbTemplate {
 
         final List<T> totalItems = new ArrayList<>();
 
-        if (itemConfiguration.hasIndexOn(query.getAttributeName())
+        if (itemConfiguration.hasIndexForQuery(query)
                 && query.getCondition().getComparisonOperator() == Operators.EQUALS) {
 
-            final QuerySpec querySpec = generateQuerySpec(query);
+            final QuerySpec querySpec = QuerySpecBuilder.build(query, itemClass);
             final ItemCollection<QueryOutcome> queryOutcome;
 
             if (itemConfiguration.primaryKeyDefinition().propertyName().equals(query.getAttributeName())) {
                 // if the query is for the has then call query on table
                 queryOutcome = table.query(querySpec);
             } else {
-                final Index index = table.getIndex(query.getAttributeName() + "_idx");
+                final String indexName = IndexNameBuilder.build(query);
+                final Index index = table.getIndex(indexName);
                 queryOutcome = index.query(querySpec);
             }
 
@@ -290,16 +290,10 @@ public class DynamoDocumentStoreTemplate extends AbstractDynamoDbTemplate {
         return totalItems;
     }
 
-    private QuerySpec generateQuerySpec(final AttributeQuery query) {
-        final QuerySpec querySpec = new QuerySpec().withHashKey(query.getAttributeName(),
-                query.getCondition().getValues().iterator().next());
-        return querySpec;
-    }
-
     private <T extends Item> ScanSpec generateScanSpec(final AttributeQuery query, final Class<T> tableItemType)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException, SecurityException {
-        final Class<?> clazz = getScanSpecOperandType(query.getAttributeName(), tableItemType);
+        final Class<?> clazz = query.getAttributeType(tableItemType);
 
         ScanSpec scanSpec = new ScanSpec();
 
@@ -355,17 +349,6 @@ public class DynamoDocumentStoreTemplate extends AbstractDynamoDbTemplate {
             scanSpec = scanSpec.withValueMap(valueMap);
         }
         return scanSpec;
-    }
-
-    private <T extends Item> Class<?> getScanSpecOperandType(final String fieldName, final Class<T> itemClass) {
-        Class<?> returnType = null;
-        final Field[] fieldArray = itemClass.getDeclaredFields();
-        for (final Field field : fieldArray) {
-            if (fieldName.equals(field.getName())) {
-                returnType = field.getType();
-            }
-        }
-        return returnType;
     }
 
     private PrimaryKey getPrimaryKey(final ItemId itemId, final ItemConfiguration itemConfiguration) {

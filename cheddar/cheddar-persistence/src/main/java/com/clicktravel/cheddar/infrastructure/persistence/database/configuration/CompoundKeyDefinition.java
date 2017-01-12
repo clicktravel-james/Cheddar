@@ -14,21 +14,14 @@
  * limitations under the License.
  *
  */
-package com.clicktravel.cheddar.application.security;
+package com.clicktravel.cheddar.infrastructure.persistence.database.configuration;
 
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+/**
+ * Represents a type which is a compound key definition within the database schema, e.g. a compound primary key.
+ */
+public interface CompoundKeyDefinition {
 
-@Component
-@Aspect
-@Order(100)
-public class AuthenticatedAspect {
+    String supportingPropertyName();
 
-    @Before("@annotation(com.clicktravel.cheddar.application.security.Authenticated)")
-    public void checkAuthenticated() {
-        SecurityChecker.checkAnyUser();
-    }
-
+    Class<?> supportingPropertyType();
 }

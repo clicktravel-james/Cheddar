@@ -14,21 +14,16 @@
  * limitations under the License.
  *
  */
-package com.clicktravel.cheddar.infrastructure.persistence.database;
+package com.clicktravel.infrastructure.persistence.inmemory.database;
 
-import static com.clicktravel.common.random.Randoms.randomString;
+import com.clicktravel.cheddar.infrastructure.persistence.database.Item;
 
-public class StubItem implements Item {
+public class StubWithGlobalSecondaryIndexItem implements Item {
 
     private String id;
-    private String stringProperty;
-    private Integer integerProperty;
+    private String gsiHashProperty;
+    private Integer gsiRangeProperty;
     private Long version;
-
-    public StubItem() {
-        id = randomString(10);
-        version = 1L;
-    }
 
     public String getId() {
         return id;
@@ -38,20 +33,20 @@ public class StubItem implements Item {
         this.id = id;
     }
 
-    public String getStringProperty() {
-        return stringProperty;
+    public String getGsiHashProperty() {
+        return gsiHashProperty;
     }
 
-    public void setStringProperty(final String stringProperty) {
-        this.stringProperty = stringProperty;
+    public void setGsiHashProperty(final String gsiHashProperty) {
+        this.gsiHashProperty = gsiHashProperty;
     }
 
-    public Integer getIntegerProperty() {
-        return integerProperty;
+    public Integer getGsiRangeProperty() {
+        return gsiRangeProperty;
     }
 
-    public void setIntegerProperty(final Integer integerProperty) {
-        this.integerProperty = integerProperty;
+    public void setGsiRangeProperty(final Integer gsiRangeProperty) {
+        this.gsiRangeProperty = gsiRangeProperty;
     }
 
     @Override
@@ -68,9 +63,9 @@ public class StubItem implements Item {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((gsiHashProperty == null) ? 0 : gsiHashProperty.hashCode());
+        result = prime * result + ((gsiRangeProperty == null) ? 0 : gsiRangeProperty.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((integerProperty == null) ? 0 : integerProperty.hashCode());
-        result = prime * result + ((stringProperty == null) ? 0 : stringProperty.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
         return result;
     }
@@ -86,26 +81,26 @@ public class StubItem implements Item {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StubItem other = (StubItem) obj;
+        final StubWithGlobalSecondaryIndexItem other = (StubWithGlobalSecondaryIndexItem) obj;
+        if (gsiHashProperty == null) {
+            if (other.gsiHashProperty != null) {
+                return false;
+            }
+        } else if (!gsiHashProperty.equals(other.gsiHashProperty)) {
+            return false;
+        }
+        if (gsiRangeProperty == null) {
+            if (other.gsiRangeProperty != null) {
+                return false;
+            }
+        } else if (!gsiRangeProperty.equals(other.gsiRangeProperty)) {
+            return false;
+        }
         if (id == null) {
             if (other.id != null) {
                 return false;
             }
         } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (integerProperty == null) {
-            if (other.integerProperty != null) {
-                return false;
-            }
-        } else if (!integerProperty.equals(other.integerProperty)) {
-            return false;
-        }
-        if (stringProperty == null) {
-            if (other.stringProperty != null) {
-                return false;
-            }
-        } else if (!stringProperty.equals(other.stringProperty)) {
             return false;
         }
         if (version == null) {

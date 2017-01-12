@@ -14,21 +14,16 @@
  * limitations under the License.
  *
  */
-package com.clicktravel.cheddar.infrastructure.persistence.database;
+package com.clicktravel.infrastructure.persistence.aws.dynamodb;
 
-import static com.clicktravel.common.random.Randoms.randomString;
+import com.clicktravel.cheddar.infrastructure.persistence.database.Item;
 
-public class StubItem implements Item {
+public class StubWithGlobalSecondaryIndexItem implements Item {
 
     private String id;
-    private String stringProperty;
-    private Integer integerProperty;
+    private String gsi;
+    private Integer gsiSupportingValue;
     private Long version;
-
-    public StubItem() {
-        id = randomString(10);
-        version = 1L;
-    }
 
     public String getId() {
         return id;
@@ -38,20 +33,20 @@ public class StubItem implements Item {
         this.id = id;
     }
 
-    public String getStringProperty() {
-        return stringProperty;
+    public String getGsi() {
+        return gsi;
     }
 
-    public void setStringProperty(final String stringProperty) {
-        this.stringProperty = stringProperty;
+    public void setGsi(final String gsi) {
+        this.gsi = gsi;
     }
 
-    public Integer getIntegerProperty() {
-        return integerProperty;
+    public Integer getGsiSupportingValue() {
+        return gsiSupportingValue;
     }
 
-    public void setIntegerProperty(final Integer integerProperty) {
-        this.integerProperty = integerProperty;
+    public void setGsiSupportingValue(final Integer gsiSupportingValue) {
+        this.gsiSupportingValue = gsiSupportingValue;
     }
 
     @Override
@@ -68,9 +63,9 @@ public class StubItem implements Item {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((gsi == null) ? 0 : gsi.hashCode());
+        result = prime * result + ((gsiSupportingValue == null) ? 0 : gsiSupportingValue.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((integerProperty == null) ? 0 : integerProperty.hashCode());
-        result = prime * result + ((stringProperty == null) ? 0 : stringProperty.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
         return result;
     }
@@ -86,26 +81,26 @@ public class StubItem implements Item {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StubItem other = (StubItem) obj;
+        final StubWithGlobalSecondaryIndexItem other = (StubWithGlobalSecondaryIndexItem) obj;
+        if (gsi == null) {
+            if (other.gsi != null) {
+                return false;
+            }
+        } else if (!gsi.equals(other.gsi)) {
+            return false;
+        }
+        if (gsiSupportingValue == null) {
+            if (other.gsiSupportingValue != null) {
+                return false;
+            }
+        } else if (!gsiSupportingValue.equals(other.gsiSupportingValue)) {
+            return false;
+        }
         if (id == null) {
             if (other.id != null) {
                 return false;
             }
         } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (integerProperty == null) {
-            if (other.integerProperty != null) {
-                return false;
-            }
-        } else if (!integerProperty.equals(other.integerProperty)) {
-            return false;
-        }
-        if (stringProperty == null) {
-            if (other.stringProperty != null) {
-                return false;
-            }
-        } else if (!stringProperty.equals(other.stringProperty)) {
             return false;
         }
         if (version == null) {

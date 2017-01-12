@@ -14,26 +14,16 @@
  * limitations under the License.
  *
  */
-package com.clicktravel.cheddar.request.context;
+package com.clicktravel.infrastructure.persistence.aws.dynamodb;
 
-import static com.clicktravel.common.random.Randoms.randomId;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import com.clicktravel.cheddar.infrastructure.persistence.exception.PersistenceException;
 
-import org.junit.Test;
+public class InvalidConditionOperatorException extends PersistenceException {
 
-public class BasicSecurityContextTest {
+    private static final long serialVersionUID = 1L;
 
-    @Test
-    public void shouldCreateSecurityContext_withPrincipal() {
-        // Given
-        final String principal = randomId();
-
-        // When
-        final BasicSecurityContext securityContext = new BasicSecurityContext(principal);
-
-        // Then
-        assertThat(securityContext.principal(), is(principal));
+    public InvalidConditionOperatorException(final String message) {
+        super(message);
     }
 
 }

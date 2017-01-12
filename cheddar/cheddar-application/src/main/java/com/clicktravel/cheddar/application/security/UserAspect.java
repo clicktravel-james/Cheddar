@@ -24,10 +24,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 @Order(100)
-public class AuthenticatedAspect {
+public class UserAspect {
 
-    @Before("@annotation(com.clicktravel.cheddar.application.security.Authenticated)")
-    public void checkAuthenticated() {
+    @Before("@annotation(com.clicktravel.cheddar.application.security.User)")
+    public void checkAnyUserInSecurityContext() {
         SecurityChecker.checkAnyUser();
     }
 
